@@ -39,14 +39,18 @@ def parse_argv():
     return int(argv[1])
 
 
+def format_predict_response(predict_response: 'PredictResponse'):
+    return '\n'.join([f'Categories: {cat.label}, Value: {"{:.3f}".format(cat.value)}' for cat in predict_response.categories]) + \
+            '\n' + \
+            '\n'.join([f'Attribute: {attr.label}, Value: {"{:.3f}".format(attr.value)}' for attr in predict_response.attributes])
+
+
 def visualize_results(results_queue: 'Queue'):
     """
     Function to display the received results using matplotlib
     :return:
     """
 
-    # fig = plt.figure()
-    # ax = fig.gca()
     fig, (ax1, ax2) = plt.subplots(ncols=2)
 
     last_image = np.zeros((100, 100))
@@ -60,15 +64,12 @@ def visualize_results(results_queue: 'Queue'):
 
         predict_response = PredictResponse()
         result.payload.Unpack(predict_response)
-        print(predict_response)
-        text.set_text(predict_response.__repr__())
+        text.set_text(format_predict_response(predict_response))
 
         result_image = Image()
         result.metadata.Unpack(result_image)
         im.set_data(PILImage.open(io.BytesIO(result_image.bytes)))
-        print("On draw")
         plt.draw()
-        print("After draw")
         plt.pause(1e-3)
 
 

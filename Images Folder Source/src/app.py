@@ -23,7 +23,7 @@ def parse_argv():
     if not argv or len(argv) != 4:
         print("Invalid command line arguments. 3 argument expected")
         exit(1)
-    path = argv[1]
+    path = Path(argv[1])
     if not os.path.exists(path):
         os.mkdir(path)
     elif not os.path.isdir(path):
@@ -42,10 +42,8 @@ def main():
         while True:
             print('Sending files')
             requests = RequestsStream()
-            responses = stub.Transfer(requests)
-            for file in os.listdir(image_dir):
-                path = Path(f'{image_dir}/{file}')
-                print(path.stem)
+            _ = stub.Transfer(requests)
+            for path in filter(lambda x: x.is_file(), image_dir.iterdir()):
                 with open(path, 'rb') as fp:
                     image_bytes = fp.read()
                     message_metadata = Image(bytes=image_bytes,
@@ -62,8 +60,6 @@ def main():
                                                   metadata=metadata_any)
                     requests.next(request)
             requests.complete()
-            gather_responses = [r for r in responses]
-            print(f'Confirmed {len(gather_responses)} requests')
             sleep(_SEND_FILES_INTERVAL)
 
 
