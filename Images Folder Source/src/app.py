@@ -43,7 +43,7 @@ def main():
             print('Sending files')
             requests = RequestsStream()
             _ = stub.Transfer(requests)
-            for path in filter(lambda x: x.is_file(), image_dir.iterdir()):
+            for path in filter(lambda x: x.is_file() and x.suffix in {'.jpg', '.png'}, image_dir.iterdir()):
                 with open(path, 'rb') as fp:
                     image_bytes = fp.read()
                     message_metadata = Image(bytes=image_bytes,
