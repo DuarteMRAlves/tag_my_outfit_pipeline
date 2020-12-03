@@ -5,17 +5,8 @@ services:
     environment:
       HOST: "[::]"
       PORT: 50051
-  processing-node:
-    image: node:latest
-    environment:
-      SELF_PORT: 50050
-      NEXT_HOST: host.docker.internal
-      NEXT_PORT: 50052
-      PROCESSING_HOST: tag-my-outfit
-      PROCESSING_PORT: 50051
-      PROCESSING_METHOD: predict
-    ports:
-      - 50050:50050
+  orchestrator-node:
+    image: tag-my-outfit-orchestrator:latest
     depends_on:
       - tag-my-outfit
-    command: bash -c "/usr/bin/wait-for-it.sh --timeout=0 tag-my-outfit:50051 && java -cp '*' pipeline.node.App"
+    command: bash -c "/usr/bin/wait-for-all.sh stages.csv && java -cp '*' pipeline.orchestrator.App"

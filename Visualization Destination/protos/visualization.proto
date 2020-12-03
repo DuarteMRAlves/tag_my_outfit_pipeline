@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "pipeline/core/messages/grpc/image.proto";
+import "outfit_tagging/interface/service.proto";
+
+
+service VisualizationService {
+    rpc Visualize(VisualizationRequest) returns (VisualizationResponse);
+}
+
+message VisualizationRequest {
+    Image image_data = 1;
+    PredictResponse prediction = 2;
+}
+
+message VisualizationResponse {}

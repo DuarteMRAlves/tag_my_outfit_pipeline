@@ -1,29 +1,40 @@
-import concurrent.futures as futures
 import grpc
-import grpc_reflection.v1alpha.reflection as grpc_reflect
 import io
 import logging
-import multiprocessing as mult_proc
 import sys
 import tkinter as tk
 import threading
-import visualization_pb2 as vis
-import visualization_pb2_grpc as vis_grpc
 import PIL.Image as PIT_img
 import PIL.ImageTk as PIL_img_tk
 
+from concurrent import futures
+from multiprocessing import Process, Queue
+from pipeline.core.connections.grpc.service_pb2 import DataTransferResponse
+from pipeline.core.connections.grpc import service_pb2_grpc
+from pipeline.core.messages.grpc.image_pb2 import Image
+from outfit_tagging.interface.service_pb2 import PredictResponse
+
 _MAX_WORKERS = 10
-_SERVICE_NAME = 'VisualizationService'
 
 
-class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
+class ServerImpl(service_pb2_grpc.DataTransferServiceServicer):
 
-    def __init__(self, results_queue: mult_proc.Queue):
+    def __init__(self, results_queue: 'Queue'):
         self.__results_queue = results_queue
 
-    def Visualize(self, request: vis.VisualizationRequest, context):
-        self.__results_queue.put(request)
-        return vis.VisualizationResponse()
+    def Transfer(self, request_iterator, context):
+        print("Received Transfer Request")
+        for result in request_iterator:
+            self.__results_queue.put(result)
+        return [DataTransferResponse()]
+
+
+def parse_argv():
+    argv = sys.argv
+    if len(argv) != 2:
+        print(f'Invalid number of arguments: 1 expected but received {len(argv) - 1}')
+        exit(1)
+    return int(argv[1])
 
 
 class ResultsVisualizationHandler:
@@ -102,7 +113,8 @@ class ResultsVisualizationHandler:
             if not result:
                 break
 
-            predict_response = result.prediction
+            predict_response = PredictResponse()
+            result.payload.Unpack(predict_response)
             self.__txt_category.delete('1.0', tk.END)
             self.__txt_category.insert('1.0', '\n'.join(
                 [f'{cat.label}, {"{:.3f}".format(cat.value)}'
@@ -113,7 +125,8 @@ class ResultsVisualizationHandler:
                 [f'{attr.label}, {"{:.3f}".format(attr.value)}'
                  for attr in predict_response.attributes]))
 
-            result_image = result.image_data
+            result_image = Image()
+            result.metadata.Unpack(result_image)
             self.__pil_image = PIT_img.open(io.BytesIO(result_image.bytes))
             self.__update_image()
 
@@ -130,7 +143,7 @@ class ResultsVisualizationHandler:
         update_canvas_thread.join()
 
 
-def visualize_results(results_queue: mult_proc.Queue):
+def visualize_results(results_queue: 'Queue'):
     """
     Function to display received results using tkinter
     :param results_queue: queue with the received images and classifications
@@ -139,27 +152,14 @@ def visualize_results(results_queue: mult_proc.Queue):
     ResultsVisualizationHandler(results_queue).run()
 
 
-def parse_argv():
-    argv = sys.argv
-    if len(argv) != 2:
-        print(f'Invalid number of arguments: 1 expected but received {len(argv) - 1}')
-        exit(1)
-    return int(argv[1])
-
-
 def main():
     port = parse_argv()
-    results_queue = mult_proc.Queue()
-    visualization_process = mult_proc.Process(target=visualize_results, args=(results_queue,))
+    results_queue = Queue()
+    visualization_process = Process(target=visualize_results, args=(results_queue,))
     visualization_process.start()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=_MAX_WORKERS))
-    vis_grpc.add_VisualizationServiceServicer_to_server(
-        VisualizationServiceImpl(results_queue), server)
-    SERVICE_NAME = (
-        vis.DESCRIPTOR.services_by_name[_SERVICE_NAME].full_name,
-        grpc_reflect.SERVICE_NAME
-    )
-    grpc_reflect.enable_server_reflection(SERVICE_NAME, server)
+    service_pb2_grpc.add_DataTransferServiceServicer_to_server(
+        ServerImpl(results_queue), server)
     server.add_insecure_port(f'[::]:{port}')
     server.start()
     visualization_process.join()

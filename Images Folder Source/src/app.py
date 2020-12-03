@@ -1,9 +1,14 @@
-import os
+import argparse
+import concurrent.futures as futures
 import grpc
-import sys
+import grpc_reflection.v1alpha.reflection as grpc_reflect
+import pathlib
+import pipeline.core.connections.grpc.sources_pb2 as sources
+import pipeline.core.connections.grpc.sources_pb2_grpc as sources_grpc
+
+import pull_server
 
 from google.protobuf.any_pb2 import Any
-from pathlib import Path
 from time import sleep
 
 from pipeline.core.connections.grpc.service_pb2 import DataTransferRequest
@@ -16,25 +21,24 @@ from transfer.streams import RequestsStream
 
 
 _SEND_FILES_INTERVAL = 10
+_PULL_MODE = '--pull'
+_PUSH_MODE = '--push'
+_SERVICE_NAME = 'ImageDataSource'
 
 
 def parse_argv():
-    argv = sys.argv
-    if not argv or len(argv) != 4:
-        print("Invalid command line arguments. 3 argument expected")
-        exit(1)
-    path = Path(argv[1])
-    if not os.path.exists(path):
-        os.mkdir(path)
-    elif not os.path.isdir(path):
-        print("Invalid command line arguments. Directory expected")
-        exit(1)
-    return path, argv[2], int(argv[3])
+    main_parser = argparse.ArgumentParser()
+    main_parser.add_argument('image_dir', help='source directory of the images to send')
+    subparsers = main_parser.add_subparsers(help='sub-command help', dest='sub_command')
+    push_parser = subparsers.add_parser('push', help='Starts sending the data to the next node')
+    push_parser.add_argument('next_node_host')
+    push_parser.add_argument('next_node_port', type=int)
+    pull_parser = subparsers.add_parser('pull', help='Creates a server that waits for request')
+    pull_parser.add_argument('port', type=int)
+    return main_parser.parse_args()
 
 
-def main():
-    image_dir, next_node_host, next_node_port = parse_argv()
-    print(f'Recovering images from {image_dir}')
+def run_push_mode(image_dir, next_node_host, next_node_port):
     print(f'Connecting to next node at {next_node_host}:{next_node_port}')
     with grpc.insecure_channel(f'{next_node_host}:{next_node_port}') as channel:
         stub = DataTransferServiceStub(channel)
@@ -61,6 +65,30 @@ def main():
                     requests.next(request)
             requests.complete()
             sleep(_SEND_FILES_INTERVAL)
+
+
+def run_pull_mode(image_dir, port):
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    sources_grpc.add_ImageDataSourceServicer_to_server(pull_server.PullServer(pathlib.Path(image_dir)), server)
+    SERVICE_NAME = (
+        sources.DESCRIPTOR.services_by_name[_SERVICE_NAME].full_name,
+        grpc_reflect.SERVICE_NAME
+    )
+    grpc_reflect.enable_server_reflection(SERVICE_NAME, server)
+    server.add_insecure_port(f'[::]:{port}')
+    print(f'Starting Pull Server at [::]:{port}')
+    server.start()
+    server.wait_for_termination()
+
+
+def main():
+    args = parse_argv()
+    image_dir = args.image_dir
+    print(f'Recovering images from {image_dir}')
+    if args.sub_command == 'push':
+        run_push_mode(image_dir, args.next_node_host, args.next_node_port)
+    elif args.sub_command == 'pull':
+        run_pull_mode(image_dir, args.port)
 
 
 if __name__ == '__main__':
