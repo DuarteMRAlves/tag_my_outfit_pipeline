@@ -26,6 +26,7 @@ class PullServer(sources_grpc.ImageDataSourceServicer):
                     break
             if image_path:
                 break
+        time.sleep(1)
         with open(image_path, 'rb') as fp:
             image_bytes = fp.read()
             response = image.Image(bytes=image_bytes,

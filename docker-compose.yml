@@ -6,7 +6,8 @@ services:
       HOST: "[::]"
       PORT: 50051
   orchestrator-node:
+    build: .
     image: tag-my-outfit-orchestrator:latest
     depends_on:
       - tag-my-outfit
-    command: bash -c "/usr/bin/wait-for-all.sh stages.csv && java -cp '*' pipeline.orchestrator.App"
+    command: bash -c "/usr/bin/wait-for-all.sh urls.txt && java -cp '*' pipeline.orchestrator.App"

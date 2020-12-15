@@ -1,0 +1,32 @@
+stages:
+  - name: "Source"
+    host: host.docker.internal
+    port: 50050
+    method:
+      type: UNARY
+  - name: "TagMyOutfit"
+    host: tag-my-outfit
+    port: 50051
+    method:
+      name: predict
+      type: UNARY
+  - name: "Visualization"
+    host: host.docker.internal
+    port: 50052
+    method:
+      type: UNARY
+links:
+  - source:
+      stage: "Source"
+    target:
+      stage: "TagMyOutfit"
+  - source:
+      stage: "TagMyOutfit"
+    target:
+      stage: "Visualization"
+      field: "prediction"
+  - source:
+      stage: "Source"
+    target:
+      stage: "Visualization"
+      field: "image_data"
