@@ -3,6 +3,7 @@ stages:
     host: host.docker.internal
     port: 50050
     method:
+      name: GetStream
       type: UNARY
   - name: "TagMyOutfit"
     host: tag-my-outfit

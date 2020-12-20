@@ -1,2 +1,4 @@
 # Ignore images dir
 /images
+# Ignore testing dir
+/testing
