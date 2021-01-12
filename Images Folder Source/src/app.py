@@ -3,8 +3,8 @@ import concurrent.futures as futures
 import grpc
 import grpc_reflection.v1alpha.reflection as grpc_reflect
 import pathlib
-import pipeline.core.connections.grpc.sources_pb2 as sources
-import pipeline.core.connections.grpc.sources_pb2_grpc as sources_grpc
+import source_pb2 as source
+import source_pb2_grpc as source_grpc
 
 import pull_server
 
@@ -13,7 +13,6 @@ from time import sleep
 
 from pipeline.core.connections.grpc.service_pb2 import DataTransferRequest
 from pipeline.core.connections.grpc.service_pb2_grpc import DataTransferServiceStub
-from pipeline.core.messages.grpc.image_pb2 import Image
 from outfit_tagging.interface.service_pb2 import PredictRequest
 
 
@@ -23,7 +22,7 @@ from transfer.streams import RequestsStream
 _SEND_FILES_INTERVAL = 10
 _PULL_MODE = '--pull'
 _PUSH_MODE = '--push'
-_SERVICE_NAME = 'ImageDataSource'
+_SERVICE_NAME = 'ImageSourceService'
 
 
 def parse_argv():
@@ -50,9 +49,9 @@ def run_push_mode(image_dir, next_node_host, next_node_port):
             for path in filter(lambda x: x.is_file() and x.suffix in {'.jpg', '.png'}, image_dir.iterdir()):
                 with open(path, 'rb') as fp:
                     image_bytes = fp.read()
-                    message_metadata = Image(bytes=image_bytes,
-                                             format=''.join(path.suffixes),
-                                             name=path.stem)
+                    message_metadata = source.Image(bytes=image_bytes,
+                                                    format=''.join(path.suffixes),
+                                                    name=path.stem)
                     message_payload = PredictRequest(image_data=image_bytes,
                                                      all_categories=False,
                                                      all_attributes=False)
@@ -69,9 +68,11 @@ def run_push_mode(image_dir, next_node_host, next_node_port):
 
 def run_pull_mode(image_dir, port):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    sources_grpc.add_ImageDataSourceServicer_to_server(pull_server.PullServer(pathlib.Path(image_dir)), server)
+    source_grpc.add_ImageSourceServiceServicer_to_server(
+        pull_server.PullServer(pathlib.Path(image_dir)),
+        server)
     SERVICE_NAME = (
-        sources.DESCRIPTOR.services_by_name[_SERVICE_NAME].full_name,
+        source.DESCRIPTOR.services_by_name[_SERVICE_NAME].full_name,
         grpc_reflect.SERVICE_NAME
     )
     grpc_reflect.enable_server_reflection(SERVICE_NAME, server)

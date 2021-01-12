@@ -1,13 +1,13 @@
 import pathlib
-import pipeline.core.connections.grpc.sources_pb2_grpc as sources_grpc
-import pipeline.core.messages.grpc.image_pb2 as image
+import source_pb2_grpc as source_grpc
+import source_pb2 as source
 import time
 
 
 _DELAY = 1
 
 
-class PullServer(sources_grpc.ImageDataSourceServicer):
+class PullServer(source_grpc.ImageSourceServiceServicer):
 
     def __init__(self, image_dir: pathlib.Path):
         self.__image_dir = image_dir
@@ -44,9 +44,9 @@ class PullServer(sources_grpc.ImageDataSourceServicer):
     def __get_response_from_path(image_path):
         with open(image_path, 'rb') as fp:
             image_bytes = fp.read()
-            response = image.Image(bytes=image_bytes,
-                                   format=''.join(image_path.suffixes),
-                                   name=image_path.stem)
+            response = source.Image(bytes=image_bytes,
+                                    format=''.join(image_path.suffixes),
+                                    name=image_path.stem)
         return response
 
 
