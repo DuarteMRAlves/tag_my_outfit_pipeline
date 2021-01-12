@@ -44,9 +44,8 @@ class PullServer(source_grpc.ImageSourceServiceServicer):
     def __get_response_from_path(image_path):
         with open(image_path, 'rb') as fp:
             image_bytes = fp.read()
-            response = source.Image(bytes=image_bytes,
-                                    format=''.join(image_path.suffixes),
-                                    name=image_path.stem)
+            response = source.PredictRequest(
+                image_data=image_bytes)
         return response
 
 

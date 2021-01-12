@@ -12,7 +12,7 @@ from multiprocessing import Process, Queue
 from pipeline.core.connections.grpc.service_pb2 import DataTransferResponse
 from pipeline.core.connections.grpc import service_pb2_grpc
 from pipeline.core.messages.grpc.image_pb2 import Image
-from outfit_tagging.interface.service_pb2 import PredictResponse
+import outfit_tagging.interface.service_pb2 as service
 
 _MAX_WORKERS = 10
 
@@ -113,7 +113,7 @@ class ResultsVisualizationHandler:
             if not result:
                 break
 
-            predict_response = PredictResponse()
+            predict_response = service.PredictResponse()
             result.payload.Unpack(predict_response)
             self.__txt_category.delete('1.0', tk.END)
             self.__txt_category.insert('1.0', '\n'.join(

@@ -17,7 +17,7 @@ class VisualizationServiceStub(object):
         self.Visualize = channel.unary_unary(
                 '/VisualizationService/Visualize',
                 request_serializer=visualization__pb2.VisualizationRequest.SerializeToString,
-                response_deserializer=visualization__pb2.VisualizationResponse.FromString,
+                response_deserializer=visualization__pb2.Empty.FromString,
                 )
 
 
@@ -36,7 +36,7 @@ def add_VisualizationServiceServicer_to_server(servicer, server):
             'Visualize': grpc.unary_unary_rpc_method_handler(
                     servicer.Visualize,
                     request_deserializer=visualization__pb2.VisualizationRequest.FromString,
-                    response_serializer=visualization__pb2.VisualizationResponse.SerializeToString,
+                    response_serializer=visualization__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -61,6 +61,6 @@ class VisualizationService(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/VisualizationService/Visualize',
             visualization__pb2.VisualizationRequest.SerializeToString,
-            visualization__pb2.VisualizationResponse.FromString,
+            visualization__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

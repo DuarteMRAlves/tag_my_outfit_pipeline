@@ -23,7 +23,7 @@ class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
 
     def Visualize(self, request: vis.VisualizationRequest, context):
         self.__results_queue.put(request)
-        return vis.VisualizationResponse()
+        return vis.Empty()
 
 
 class ResultsVisualizationHandler:
@@ -102,7 +102,7 @@ class ResultsVisualizationHandler:
             if not result:
                 break
 
-            predict_response = result.prediction
+            predict_response = result.predict_response
             self.__txt_category.delete('1.0', tk.END)
             self.__txt_category.insert('1.0', '\n'.join(
                 [f'{cat.label}, {"{:.3f}".format(cat.value)}'
@@ -113,8 +113,8 @@ class ResultsVisualizationHandler:
                 [f'{attr.label}, {"{:.3f}".format(attr.value)}'
                  for attr in predict_response.attributes]))
 
-            result_image = result.image_data
-            self.__pil_image = PIT_img.open(io.BytesIO(result_image.bytes))
+            predict_request = result.predict_request
+            self.__pil_image = PIT_img.open(io.BytesIO(predict_request.image_data))
             self.__update_image()
 
     def __resize_canvas(self, event):

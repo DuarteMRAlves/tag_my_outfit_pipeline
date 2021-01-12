@@ -25,9 +25,9 @@ links:
       stage: "TagMyOutfit"
     target:
       stage: "Visualization"
-      field: "prediction"
+      field: "predict_response"
   - source:
       stage: "Source"
     target:
       stage: "Visualization"
-      field: "image_data"
+      field: "predict_request"

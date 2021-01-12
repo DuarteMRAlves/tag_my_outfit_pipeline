@@ -13,7 +13,6 @@ from time import sleep
 
 from pipeline.core.connections.grpc.service_pb2 import DataTransferRequest
 from pipeline.core.connections.grpc.service_pb2_grpc import DataTransferServiceStub
-from outfit_tagging.interface.service_pb2 import PredictRequest
 
 
 from transfer.streams import RequestsStream
@@ -52,9 +51,9 @@ def run_push_mode(image_dir, next_node_host, next_node_port):
                     message_metadata = source.Image(bytes=image_bytes,
                                                     format=''.join(path.suffixes),
                                                     name=path.stem)
-                    message_payload = PredictRequest(image_data=image_bytes,
-                                                     all_categories=False,
-                                                     all_attributes=False)
+                    message_payload = source.PredictRequest(image_data=image_bytes,
+                                                            all_categories=False,
+                                                            all_attributes=False)
                     metadata_any = Any()
                     metadata_any.Pack(message_metadata)
                     payload_any = Any()

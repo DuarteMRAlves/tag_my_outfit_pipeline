@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x13visualization.proto\"X\n\x14VisualizationRequest\x12\x1a\n\nimage_data\x18\x01 \x01(\x0b\x32\x06.Image\x12$\n\nprediction\x18\x02 \x01(\x0b\x32\x10.PredictResponse\"4\n\x05Image\x12\r\n\x05\x62ytes\x18\x01 \x01(\x0c\x12\x0e\n\x06\x66ormat\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"[\n\x0fPredictResponse\x12#\n\ncategories\x18\x02 \x03(\x0b\x32\x0f.Correspondence\x12#\n\nattributes\x18\x03 \x03(\x0b\x32\x0f.Correspondence\".\n\x0e\x43orrespondence\x12\r\n\x05label\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01\"\x17\n\x15VisualizationResponse2R\n\x14VisualizationService\x12:\n\tVisualize\x12\x15.VisualizationRequest\x1a\x16.VisualizationResponseb\x06proto3'
+  serialized_pb=b'\n\x13visualization.proto\"l\n\x14VisualizationRequest\x12(\n\x0fpredict_request\x18\x01 \x01(\x0b\x32\x0f.PredictRequest\x12*\n\x10predict_response\x18\x02 \x01(\x0b\x32\x10.PredictResponse\"T\n\x0ePredictRequest\x12\x12\n\nimage_data\x18\x01 \x01(\x0c\x12\x16\n\x0e\x61ll_categories\x18\x02 \x01(\x08\x12\x16\n\x0e\x61ll_attributes\x18\x03 \x01(\x08\"[\n\x0fPredictResponse\x12#\n\ncategories\x18\x02 \x03(\x0b\x32\x0f.Correspondence\x12#\n\nattributes\x18\x03 \x03(\x0b\x32\x0f.Correspondence\".\n\x0e\x43orrespondence\x12\r\n\x05label\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01\"\x07\n\x05\x45mpty2B\n\x14VisualizationService\x12*\n\tVisualize\x12\x15.VisualizationRequest\x1a\x06.Emptyb\x06proto3'
 )
 
 
@@ -34,14 +34,14 @@ _VISUALIZATIONREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='image_data', full_name='VisualizationRequest.image_data', index=0,
+      name='predict_request', full_name='VisualizationRequest.predict_request', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='prediction', full_name='VisualizationRequest.prediction', index=1,
+      name='predict_response', full_name='VisualizationRequest.predict_response', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -60,36 +60,36 @@ _VISUALIZATIONREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=23,
-  serialized_end=111,
+  serialized_end=131,
 )
 
 
-_IMAGE = _descriptor.Descriptor(
-  name='Image',
-  full_name='Image',
+_PREDICTREQUEST = _descriptor.Descriptor(
+  name='PredictRequest',
+  full_name='PredictRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='bytes', full_name='Image.bytes', index=0,
+      name='image_data', full_name='PredictRequest.image_data', index=0,
       number=1, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='format', full_name='Image.format', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='all_categories', full_name='PredictRequest.all_categories', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='name', full_name='Image.name', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='all_attributes', full_name='PredictRequest.all_attributes', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -105,8 +105,8 @@ _IMAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=113,
-  serialized_end=165,
+  serialized_start=133,
+  serialized_end=217,
 )
 
 
@@ -144,8 +144,8 @@ _PREDICTRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=167,
-  serialized_end=258,
+  serialized_start=219,
+  serialized_end=310,
 )
 
 
@@ -183,14 +183,14 @@ _CORRESPONDENCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=260,
-  serialized_end=306,
+  serialized_start=312,
+  serialized_end=358,
 )
 
 
-_VISUALIZATIONRESPONSE = _descriptor.Descriptor(
-  name='VisualizationResponse',
-  full_name='VisualizationResponse',
+_EMPTY = _descriptor.Descriptor(
+  name='Empty',
+  full_name='Empty',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
@@ -208,19 +208,19 @@ _VISUALIZATIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=308,
-  serialized_end=331,
+  serialized_start=360,
+  serialized_end=367,
 )
 
-_VISUALIZATIONREQUEST.fields_by_name['image_data'].message_type = _IMAGE
-_VISUALIZATIONREQUEST.fields_by_name['prediction'].message_type = _PREDICTRESPONSE
+_VISUALIZATIONREQUEST.fields_by_name['predict_request'].message_type = _PREDICTREQUEST
+_VISUALIZATIONREQUEST.fields_by_name['predict_response'].message_type = _PREDICTRESPONSE
 _PREDICTRESPONSE.fields_by_name['categories'].message_type = _CORRESPONDENCE
 _PREDICTRESPONSE.fields_by_name['attributes'].message_type = _CORRESPONDENCE
 DESCRIPTOR.message_types_by_name['VisualizationRequest'] = _VISUALIZATIONREQUEST
-DESCRIPTOR.message_types_by_name['Image'] = _IMAGE
+DESCRIPTOR.message_types_by_name['PredictRequest'] = _PREDICTREQUEST
 DESCRIPTOR.message_types_by_name['PredictResponse'] = _PREDICTRESPONSE
 DESCRIPTOR.message_types_by_name['Correspondence'] = _CORRESPONDENCE
-DESCRIPTOR.message_types_by_name['VisualizationResponse'] = _VISUALIZATIONRESPONSE
+DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 VisualizationRequest = _reflection.GeneratedProtocolMessageType('VisualizationRequest', (_message.Message,), {
@@ -230,12 +230,12 @@ VisualizationRequest = _reflection.GeneratedProtocolMessageType('VisualizationRe
   })
 _sym_db.RegisterMessage(VisualizationRequest)
 
-Image = _reflection.GeneratedProtocolMessageType('Image', (_message.Message,), {
-  'DESCRIPTOR' : _IMAGE,
+PredictRequest = _reflection.GeneratedProtocolMessageType('PredictRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PREDICTREQUEST,
   '__module__' : 'visualization_pb2'
-  # @@protoc_insertion_point(class_scope:Image)
+  # @@protoc_insertion_point(class_scope:PredictRequest)
   })
-_sym_db.RegisterMessage(Image)
+_sym_db.RegisterMessage(PredictRequest)
 
 PredictResponse = _reflection.GeneratedProtocolMessageType('PredictResponse', (_message.Message,), {
   'DESCRIPTOR' : _PREDICTRESPONSE,
@@ -251,12 +251,12 @@ Correspondence = _reflection.GeneratedProtocolMessageType('Correspondence', (_me
   })
 _sym_db.RegisterMessage(Correspondence)
 
-VisualizationResponse = _reflection.GeneratedProtocolMessageType('VisualizationResponse', (_message.Message,), {
-  'DESCRIPTOR' : _VISUALIZATIONRESPONSE,
+Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
+  'DESCRIPTOR' : _EMPTY,
   '__module__' : 'visualization_pb2'
-  # @@protoc_insertion_point(class_scope:VisualizationResponse)
+  # @@protoc_insertion_point(class_scope:Empty)
   })
-_sym_db.RegisterMessage(VisualizationResponse)
+_sym_db.RegisterMessage(Empty)
 
 
 
@@ -267,8 +267,8 @@ _VISUALIZATIONSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=333,
-  serialized_end=415,
+  serialized_start=369,
+  serialized_end=435,
   methods=[
   _descriptor.MethodDescriptor(
     name='Visualize',
@@ -276,7 +276,7 @@ _VISUALIZATIONSERVICE = _descriptor.ServiceDescriptor(
     index=0,
     containing_service=None,
     input_type=_VISUALIZATIONREQUEST,
-    output_type=_VISUALIZATIONRESPONSE,
+    output_type=_EMPTY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
