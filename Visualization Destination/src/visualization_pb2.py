@@ -11,8 +11,6 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from pipeline.core.messages.grpc import image_pb2 as pipeline_dot_core_dot_messages_dot_grpc_dot_image__pb2
-from outfit_tagging.interface import service_pb2 as outfit__tagging_dot_interface_dot_service__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,9 +19,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x13visualization.proto\x1a\'pipeline/core/messages/grpc/image.proto\x1a&outfit_tagging/interface/service.proto\"X\n\x14VisualizationRequest\x12\x1a\n\nimage_data\x18\x01 \x01(\x0b\x32\x06.Image\x12$\n\nprediction\x18\x02 \x01(\x0b\x32\x10.PredictResponse\"\x17\n\x15VisualizationResponse2R\n\x14VisualizationService\x12:\n\tVisualize\x12\x15.VisualizationRequest\x1a\x16.VisualizationResponseb\x06proto3'
-  ,
-  dependencies=[pipeline_dot_core_dot_messages_dot_grpc_dot_image__pb2.DESCRIPTOR,outfit__tagging_dot_interface_dot_service__pb2.DESCRIPTOR,])
+  serialized_pb=b'\n\x13visualization.proto\"X\n\x14VisualizationRequest\x12\x1a\n\nimage_data\x18\x01 \x01(\x0b\x32\x06.Image\x12$\n\nprediction\x18\x02 \x01(\x0b\x32\x10.PredictResponse\"4\n\x05Image\x12\r\n\x05\x62ytes\x18\x01 \x01(\x0c\x12\x0e\n\x06\x66ormat\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"[\n\x0fPredictResponse\x12#\n\ncategories\x18\x02 \x03(\x0b\x32\x0f.Correspondence\x12#\n\nattributes\x18\x03 \x03(\x0b\x32\x0f.Correspondence\".\n\x0e\x43orrespondence\x12\r\n\x05label\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01\"\x17\n\x15VisualizationResponse2R\n\x14VisualizationService\x12:\n\tVisualize\x12\x15.VisualizationRequest\x1a\x16.VisualizationResponseb\x06proto3'
+)
 
 
 
@@ -62,8 +59,132 @@ _VISUALIZATIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=104,
-  serialized_end=192,
+  serialized_start=23,
+  serialized_end=111,
+)
+
+
+_IMAGE = _descriptor.Descriptor(
+  name='Image',
+  full_name='Image',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='bytes', full_name='Image.bytes', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='format', full_name='Image.format', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='Image.name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=113,
+  serialized_end=165,
+)
+
+
+_PREDICTRESPONSE = _descriptor.Descriptor(
+  name='PredictResponse',
+  full_name='PredictResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='categories', full_name='PredictResponse.categories', index=0,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='attributes', full_name='PredictResponse.attributes', index=1,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=167,
+  serialized_end=258,
+)
+
+
+_CORRESPONDENCE = _descriptor.Descriptor(
+  name='Correspondence',
+  full_name='Correspondence',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='label', full_name='Correspondence.label', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='Correspondence.value', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=260,
+  serialized_end=306,
 )
 
 
@@ -87,13 +208,18 @@ _VISUALIZATIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=194,
-  serialized_end=217,
+  serialized_start=308,
+  serialized_end=331,
 )
 
-_VISUALIZATIONREQUEST.fields_by_name['image_data'].message_type = pipeline_dot_core_dot_messages_dot_grpc_dot_image__pb2._IMAGE
-_VISUALIZATIONREQUEST.fields_by_name['prediction'].message_type = outfit__tagging_dot_interface_dot_service__pb2._PREDICTRESPONSE
+_VISUALIZATIONREQUEST.fields_by_name['image_data'].message_type = _IMAGE
+_VISUALIZATIONREQUEST.fields_by_name['prediction'].message_type = _PREDICTRESPONSE
+_PREDICTRESPONSE.fields_by_name['categories'].message_type = _CORRESPONDENCE
+_PREDICTRESPONSE.fields_by_name['attributes'].message_type = _CORRESPONDENCE
 DESCRIPTOR.message_types_by_name['VisualizationRequest'] = _VISUALIZATIONREQUEST
+DESCRIPTOR.message_types_by_name['Image'] = _IMAGE
+DESCRIPTOR.message_types_by_name['PredictResponse'] = _PREDICTRESPONSE
+DESCRIPTOR.message_types_by_name['Correspondence'] = _CORRESPONDENCE
 DESCRIPTOR.message_types_by_name['VisualizationResponse'] = _VISUALIZATIONRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -103,6 +229,27 @@ VisualizationRequest = _reflection.GeneratedProtocolMessageType('VisualizationRe
   # @@protoc_insertion_point(class_scope:VisualizationRequest)
   })
 _sym_db.RegisterMessage(VisualizationRequest)
+
+Image = _reflection.GeneratedProtocolMessageType('Image', (_message.Message,), {
+  'DESCRIPTOR' : _IMAGE,
+  '__module__' : 'visualization_pb2'
+  # @@protoc_insertion_point(class_scope:Image)
+  })
+_sym_db.RegisterMessage(Image)
+
+PredictResponse = _reflection.GeneratedProtocolMessageType('PredictResponse', (_message.Message,), {
+  'DESCRIPTOR' : _PREDICTRESPONSE,
+  '__module__' : 'visualization_pb2'
+  # @@protoc_insertion_point(class_scope:PredictResponse)
+  })
+_sym_db.RegisterMessage(PredictResponse)
+
+Correspondence = _reflection.GeneratedProtocolMessageType('Correspondence', (_message.Message,), {
+  'DESCRIPTOR' : _CORRESPONDENCE,
+  '__module__' : 'visualization_pb2'
+  # @@protoc_insertion_point(class_scope:Correspondence)
+  })
+_sym_db.RegisterMessage(Correspondence)
 
 VisualizationResponse = _reflection.GeneratedProtocolMessageType('VisualizationResponse', (_message.Message,), {
   'DESCRIPTOR' : _VISUALIZATIONRESPONSE,
@@ -120,8 +267,8 @@ _VISUALIZATIONSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=219,
-  serialized_end=301,
+  serialized_start=333,
+  serialized_end=415,
   methods=[
   _descriptor.MethodDescriptor(
     name='Visualize',

@@ -32,7 +32,7 @@ class PullServer(sources_grpc.ImageDataSourceServicer):
         for image_path in directory_iter:
             response = self.__get_response_from_path(image_path)
             yield response
-            time.sleep(0.2)
+            time.sleep(1)
 
     def __get_directory_images_iter(self):
         directory_iter = filter(

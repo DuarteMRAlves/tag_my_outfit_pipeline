@@ -1,9 +1,5 @@
 syntax = "proto3";
 
-import "pipeline/core/messages/grpc/image.proto";
-import "outfit_tagging/interface/service.proto";
-
-
 service VisualizationService {
     rpc Visualize(VisualizationRequest) returns (VisualizationResponse);
 }
@@ -11,6 +7,33 @@ service VisualizationService {
 message VisualizationRequest {
     Image image_data = 1;
     PredictResponse prediction = 2;
+}
+
+/**
+ * Message to define an image
+ * bytes:  defines the bytes of the image
+ * format: defines the image format
+ * name:   defines a name for the image
+ */
+message Image {
+    bytes bytes = 1;
+    string format = 2;
+    string name = 3;
+}
+
+/* Results associated to a single prediction in a stream request
+ * categories: data associated with the predicted categories
+ * attributes: data associated with the predicted attributes
+ */
+message PredictResponse {
+    repeated Correspondence categories = 2;
+    repeated Correspondence attributes = 3;
+}
+
+/* Correspondence between a label and its value */
+message Correspondence {
+    string label = 1;
+    double value = 2;
 }
 
 message VisualizationResponse {}

@@ -31,7 +31,7 @@ class ResultsVisualizationHandler:
     __LABEL_FONT = ("Helvetica", 20)
     __TEXT_FONT = ("Helvetica", 16)
 
-    def __init__(self, results_queue: 'Queue'):
+    def __init__(self, results_queue: 'mult_proc.Queue'):
         window = tk.Tk()
 
         window.title('Results Visualization')
