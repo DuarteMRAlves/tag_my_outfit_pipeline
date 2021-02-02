@@ -1,3 +1,5 @@
 host.docker.internal:50050
-tag-my-outfit:50051
-host.docker.internal:50052
+open-pose:50051
+open-cv:50052
+tag-my-outfit:50053
+host.docker.internal:50054

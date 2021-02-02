@@ -5,20 +5,45 @@ stages:
     method:
       name: GetStream
       type: UNARY
+  - name: "OpenPose"
+    host: open-pose
+    port: 50051
+    method:
+      type: UNARY
+  - name: "OpenCV"
+    host: open-cv
+    port: 50052
+    method:
+      name: process
+      type: UNARY
   - name: "TagMyOutfit"
     host: tag-my-outfit
-    port: 50051
+    port: 50053
     method:
       name: predict
       type: UNARY
   - name: "Visualization"
     host: host.docker.internal
-    port: 50052
+    port: 50054
     method:
       type: UNARY
 links:
   - source:
       stage: "Source"
+    target:
+      stage: "OpenPose"
+  - source:
+      stage: "Source"
+    target:
+      stage: "OpenCV"
+      field: "image"
+  - source:
+      stage: "OpenPose"
+    target:
+      stage: "OpenCV"
+      field: "detected_poses"
+  - source:
+      stage: "OpenCV"
     target:
       stage: "TagMyOutfit"
   - source:

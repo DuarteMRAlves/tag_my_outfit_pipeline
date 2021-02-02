@@ -1,10 +1,29 @@
 version: '3'
 services:
+  open-pose:
+    image: open-pose-grpc-estimation:latest
+    ports:
+    - 50051:50051
+    environment:
+      PORT: 50051
+  open-cv:
+    image: opencv-grpc-server:latest
+    ports:
+      - 50052:50052
+    environment:
+      PORT: 50052
+    volumes:
+    - type: bind
+      source: ./Crop/src/crop_function.py
+      # Copy to external.py to use external as module name
+      target: /opencv-grpc/external.py
   tag-my-outfit:
     image: sipgisr/tag-my-outfit:latest
+    ports:
+    - 50053:50051
     environment:
       HOST: "[::]"
-      PORT: 50051
+      PORT: 50053
   orchestrator-node:
     build: .
     image: tag-my-outfit-orchestrator:latest
