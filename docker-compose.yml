@@ -25,8 +25,15 @@ services:
       HOST: "[::]"
       PORT: 50053
   orchestrator-node:
-    build: .
-    image: tag-my-outfit-orchestrator:latest
+    image: orchestrator:latest
+    volumes: 
+      - type: bind
+        source: ./Config
+        target: /app/config
+    environment:
+      CONFIG_FILE: "config/config.yaml"
     depends_on:
+      - open-pose
+      - open-cv
       - tag-my-outfit
-    command: bash -c "/usr/bin/wait-for-all.sh urls.txt && java -cp '*' pipeline.orchestrator.App"
+    command: bash -c "/usr/bin/wait-for-all.sh config/urls.txt && java -cp '*' pipeline.orchestrator.App"
