@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # Grpc files
-**/*_pb2*
-**/*_pb2_grpc*
+/**/*_pb2*
+/**/*_pb2_grpc*

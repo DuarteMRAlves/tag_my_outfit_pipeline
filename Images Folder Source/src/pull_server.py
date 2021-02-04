@@ -4,7 +4,7 @@ import source_pb2 as source
 import time
 
 
-_DELAY = 1
+_DELAY = 5
 
 
 class PullServer(source_grpc.ImageSourceServiceServicer):
@@ -24,15 +24,16 @@ class PullServer(source_grpc.ImageSourceServiceServicer):
                     break
             if image_path:
                 break
-        time.sleep(1)
+        time.sleep(_DELAY)
         return self.__get_response_from_path(image_path)
 
     def GetStream(self, request, context):
         directory_iter = self.__get_directory_images_iter()
         for image_path in directory_iter:
             response = self.__get_response_from_path(image_path)
+            print('Sending Image')
             yield response
-            time.sleep(1)
+            time.sleep(_DELAY)
 
     def __get_directory_images_iter(self):
         directory_iter = filter(

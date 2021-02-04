@@ -24,6 +24,14 @@ services:
     environment:
       HOST: "[::]"
       PORT: 50053
+  visualization:
+    build:
+      context: ./Visualization Destination/
+      dockerfile: docker/Dockerfile
+    image: visualization:latest
+    ports:
+      - 5000:5000
+      - 50054:50051
   orchestrator-node:
     image: orchestrator:latest
     volumes: 
@@ -36,4 +44,5 @@ services:
       - open-pose
       - open-cv
       - tag-my-outfit
+      - visualization
     command: bash -c "/usr/bin/wait-for-all.sh config/urls.txt && java -cp '*' pipeline.orchestrator.App"
