@@ -1,11 +1,15 @@
 import concurrent.futures as futures
 import grpc
 import grpc_reflection.v1alpha.reflection as grpc_reflect
+import io
 import logging
-import multiprocessing
+import queue
 import visualization_pb2 as vis
 import visualization_pb2_grpc as vis_grpc
 import time
+import PIL.Image
+import PIL.ImageDraw
+import PIL.ImageFont
 
 _MAX_WORKERS = 10
 _SERVICE_NAME = 'VisualizationService'
@@ -15,12 +19,38 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
 
-    def __init__(self, results_queue: multiprocessing.Queue):
+    def __init__(self, results_queue: queue.Queue):
         self.__results_queue = results_queue
+        self.__font = PIL.ImageFont.load_default()
 
     def Visualize(self, request: vis.VisualizationRequest, context):
-        self.__results_queue.put(request)
+        image_bytes = request.predict_request.image_data
+        original_img = PIL.Image.open(io.BytesIO(image_bytes))
+        original_img = original_img.resize((300, 300))
+
+        # Add space for text
+        new_img = PIL.Image.new(original_img.mode, (500, 300), (255, 255, 255))
+        new_img.paste(original_img, (0, 0))
+
+        # Add text to image
+        text = f'{self.__build("Categories", request.predict_response.categories)}\n\n' \
+            f'{self.__build("Attributes", request.predict_response.attributes)}'
+        editable_img = PIL.ImageDraw.Draw(new_img)
+        editable_img.text((315, 15), text, (0, 0, 0), font=self.__font)
+
+        # Save image to bytes
+        image_bytes = io.BytesIO()
+        new_img.save(image_bytes, format='jpeg')
+        image_bytes = image_bytes.getvalue()
+        self.__results_queue.put(image_bytes)
         return vis.Empty()
+
+    @staticmethod
+    def __build(title, correspondence_list):
+        correspondence_str = '\n'.join(
+            map(lambda x: f'{x.label}:{x.value}',
+                correspondence_list))
+        return f'{title}:\n{correspondence_str}'
 
 
 def run_server(results_queue):
