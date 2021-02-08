@@ -1,43 +1,38 @@
 import flask as fl
-import queue
 import logging
 import threading
 import visualization_service
+import time
 
 
-class DiscardingQueue:
+class SharedImage:
+    """
+    This class stores the bytes of an image shared
+    among two threads
+    It will be used as the last received image for display
+    """
 
     def __init__(self):
-        self.__queue = queue.Queue()
-        self.__discarding = True
+        self.__bytes = None
 
-    def get(self):
-        return self.__queue.get()
+    @property
+    def bytes(self):
+        return self.__bytes
 
-    def put(self, el):
-        if not self.__discarding:
-            self.__queue.put(el)
+    @bytes.setter
+    def bytes(self, value):
+        self.__bytes = value
 
-    def start_discarding(self):
-        logging.info('Started discarding messages')
-        self.__discarding = True
-        try:
-            while True:
-                self.__queue.get_nowait()
-        except queue.Empty:
-            pass
-
-    def stop_discarding(self):
-        logging.info('Stopped discarding messages')
-        self.__discarding = False
+    def __str__(self):
+        return str(self.__bytes)
 
 
-def run_grpc_server(results_queue):
+def run_grpc_server(current_image):
     """Start the gRPC Visualization Service and blocks"""
-    visualization_service.run_server(results_queue)
+    visualization_service.run_server(current_image)
 
 
-def generate_feed(results_queue):
+def generate_feed(current_image):
     """
     Generates a feed of frames that
     results in the multipart message
@@ -45,28 +40,24 @@ def generate_feed(results_queue):
     Yields:
         byte stream with the frames
     """
-    try:
-        logging.info('Received connection')
-        results_queue.stop_discarding()
-        while True:
-            image_bytes = results_queue.get()
+    logging.info('Received connection')
+    while True:
+        if current_image.bytes:
             frame = b''.join(
                 (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n',
-                 image_bytes,
+                 current_image.bytes,
                  b'\r\n'))
             yield frame
-    except GeneratorExit:
-        logging.info('Client closed stream')
-        results_queue.start_discarding()
+        time.sleep(0.1)
 
 
 def create_app():
     logging.basicConfig(level=logging.INFO)
     flask_app = fl.Flask(__name__)
-    results_queue = DiscardingQueue()
+    current_image = SharedImage()
     threading.Thread(
         target=run_grpc_server,
-        args=(results_queue,)).start()
+        args=(current_image,)).start()
 
     @flask_app.route('/')
     def index():
@@ -85,7 +76,7 @@ def create_app():
         """
         logging.info('Received video feed')
         return fl.Response(
-            generate_feed(results_queue),
+            generate_feed(current_image),
             mimetype='multipart/x-mixed-replace; boundary=frame')
 
     return flask_app

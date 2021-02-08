@@ -3,7 +3,6 @@ import grpc
 import grpc_reflection.v1alpha.reflection as grpc_reflect
 import io
 import logging
-import queue
 import visualization_pb2 as vis
 import visualization_pb2_grpc as vis_grpc
 import time
@@ -19,8 +18,8 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
 
-    def __init__(self, results_queue: queue.Queue):
-        self.__results_queue = results_queue
+    def __init__(self, current_image):
+        self.__current_img = current_image
         self.__font = PIL.ImageFont.load_default()
 
     def Visualize(self, request: vis.VisualizationRequest, context):
@@ -42,7 +41,7 @@ class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
         image_bytes = io.BytesIO()
         new_img.save(image_bytes, format='jpeg')
         image_bytes = image_bytes.getvalue()
-        self.__results_queue.put(image_bytes)
+        self.__current_img.bytes = image_bytes
         return vis.Empty()
 
     @staticmethod
