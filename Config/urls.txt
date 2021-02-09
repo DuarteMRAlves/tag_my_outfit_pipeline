@@ -1,5 +1,5 @@
-host.docker.internal:50050
+image-source:50051
 open-pose:50051
-open-cv:50052
-tag-my-outfit:50053
-host.docker.internal:50054
+open-cv:50051
+tag-my-outfit:50051
+visualization:50051

@@ -2,24 +2,26 @@ import argparse
 import concurrent.futures as futures
 import grpc
 import grpc_reflection.v1alpha.reflection as grpc_reflect
+import logging
+import os
 import pathlib
+import pull_server
 import source_pb2 as source
 import source_pb2_grpc as source_grpc
 
-import pull_server
 
-
-_SEND_FILES_INTERVAL = 10
-_PULL_MODE = '--pull'
-_PUSH_MODE = '--push'
 _SERVICE_NAME = 'ImageSourceService'
+_IMAGES_ENV_VAR = 'IMAGE_DIR'
+_PORT_ENV_VAR = 'PORT'
 
 
 def parse_argv():
     main_parser = argparse.ArgumentParser()
     main_parser.add_argument(
         'image_dir',
-        help='source directory of the images to send'
+        nargs='?',
+        default='images',
+        help='source directory of the images to send (defaults to images)'
     )
     main_parser.add_argument(
         '--port',
@@ -41,7 +43,7 @@ def run_pull_mode(image_dir, port):
     )
     grpc_reflect.enable_server_reflection(SERVICE_NAME, server)
     server.add_insecure_port(f'[::]:{port}')
-    print(f'Starting Pull Server at [::]:{port}')
+    logging.info('Starting server at [::]:%d', port)
     server.start()
     server.wait_for_termination()
 
@@ -49,10 +51,16 @@ def run_pull_mode(image_dir, port):
 def main():
     args = parse_argv()
     image_dir = args.image_dir
+    image_dir = os.getenv(_IMAGES_ENV_VAR, image_dir)
     port = args.port
-    print(f'Recovering images from {image_dir}')
+    port = os.getenv(_PORT_ENV_VAR, port)
+    logging.info('Recovering images from %s', image_dir)
     run_pull_mode(image_dir, port)
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        format='[ %(levelname)s ] %(asctime)s (%(module)s) %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=logging.INFO)
     main()

@@ -1,10 +1,11 @@
+import logging
 import pathlib
 import source_pb2_grpc as source_grpc
 import source_pb2 as source
 import time
 
 
-_DELAY = 5
+_DELAY = 2
 
 
 class PullServer(source_grpc.ImageSourceServiceServicer):
@@ -20,7 +21,9 @@ class PullServer(source_grpc.ImageSourceServiceServicer):
                 try:
                     image_path = next(directory_iter, None)
                 except StopIteration:
-                    print("Directory has no images")
+                    logging.error(
+                        "Directory '%s' has no images",
+                        self.__image_dir)
                     break
             if image_path:
                 break
@@ -31,7 +34,6 @@ class PullServer(source_grpc.ImageSourceServiceServicer):
         directory_iter = self.__get_directory_images_iter()
         for image_path in directory_iter:
             response = self.__get_response_from_path(image_path)
-            print('Sending Image')
             yield response
             time.sleep(_DELAY)
 

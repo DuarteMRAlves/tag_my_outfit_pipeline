@@ -1,7 +1,7 @@
 stages:
   - name: "Source"
-    host: host.docker.internal
-    port: 50050
+    host: image-source
+    port: 50051
     method:
       name: GetStream
       type: UNARY
@@ -12,19 +12,19 @@ stages:
       type: UNARY
   - name: "OpenCV"
     host: open-cv
-    port: 50052
+    port: 50051
     method:
       name: process
       type: UNARY
   - name: "TagMyOutfit"
     host: tag-my-outfit
-    port: 50053
+    port: 50051
     method:
       name: predict
       type: UNARY
   - name: "Visualization"
-    host: host.docker.internal
-    port: 50054
+    host: visualization
+    port: 50051
     method:
       type: UNARY
 links:
