@@ -1,8 +1,9 @@
-import flask as fl
 import logging
 import threading
-import visualization_service
 import time
+
+import flask as fl
+import visualization_service
 
 
 class SharedImage:
@@ -40,7 +41,6 @@ def generate_feed(current_image):
     Yields:
         byte stream with the frames
     """
-    logging.info('Received connection')
     while True:
         if current_image.bytes:
             frame = b''.join(
@@ -52,7 +52,17 @@ def generate_feed(current_image):
 
 
 def create_app():
-    logging.basicConfig(level=logging.INFO)
+    """
+    Function to create the flask app.
+    It also starts the gRPC server
+
+    Returns:
+        The flask app to be used
+    """
+    logging.basicConfig(
+        format='[ %(levelname)s ] %(asctime)s (%(module)s) %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=logging.INFO)
     flask_app = fl.Flask(__name__)
     current_image = SharedImage()
     threading.Thread(
@@ -63,7 +73,8 @@ def create_app():
     def index():
         """Video Streaming home page
 
-        :return: the html to render the homepage
+        Returns:
+            The html to render the homepage
         """
         return fl.render_template('index.html')
 
@@ -74,7 +85,7 @@ def create_app():
         :return: Http multipart response with generator
                  creating frames as they arrive
         """
-        logging.info('Received video feed')
+        logging.debug('Received Client Connection')
         return fl.Response(
             generate_feed(current_image),
             mimetype='multipart/x-mixed-replace; boundary=frame')

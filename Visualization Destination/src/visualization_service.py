@@ -1,11 +1,12 @@
 import concurrent.futures as futures
-import grpc
-import grpc_reflection.v1alpha.reflection as grpc_reflect
 import io
 import logging
+import time
+
+import grpc
+import grpc_reflection.v1alpha.reflection as grpc_reflect
 import visualization_pb2 as vis
 import visualization_pb2_grpc as vis_grpc
-import time
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
@@ -17,6 +18,11 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 
 class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
+    """
+    gRPC service to receive and process the received image
+    It resizes the images and adds the categories and attributes
+    so that they can be displayed
+    """
 
     def __init__(self, current_image):
         self.__current_img = current_image
@@ -52,16 +58,25 @@ class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
         return f'{title}:\n{correspondence_str}'
 
 
-def run_server(results_queue):
+def run_server(shared_img):
+    """
+    Runs the gRPC server that receives the requests
+    and updates the shared image with the most recent request
+
+    Args:
+        shared_img: shared image that should be updated by
+                    the server with the most recent request
+
+    """
     logging.basicConfig(level=logging.DEBUG)
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=_MAX_WORKERS))
     vis_grpc.add_VisualizationServiceServicer_to_server(
-        VisualizationServiceImpl(results_queue), server)
-    SERVICE_NAME = (
+        VisualizationServiceImpl(shared_img), server)
+    service_names = (
         vis.DESCRIPTOR.services_by_name[_SERVICE_NAME].full_name,
         grpc_reflect.SERVICE_NAME
     )
-    grpc_reflect.enable_server_reflection(SERVICE_NAME, server)
+    grpc_reflect.enable_server_reflection(service_names, server)
     server.add_insecure_port(f'[::]:{_PORT}')
     server.start()
     logging.info('Server started at [::]:%s', _PORT)
