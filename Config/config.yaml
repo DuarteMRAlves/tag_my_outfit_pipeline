@@ -50,9 +50,9 @@ links:
       stage: "TagMyOutfit"
     target:
       stage: "Visualization"
-      field: "predict_response"
+      field: "prediction"
   - source:
       stage: "Source"
     target:
       stage: "Visualization"
-      field: "predict_request"
+      field: "image"

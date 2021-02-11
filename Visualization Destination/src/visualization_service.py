@@ -29,7 +29,7 @@ class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
         self.__font = PIL.ImageFont.load_default()
 
     def Visualize(self, request: vis.VisualizationRequest, context):
-        image_bytes = request.predict_request.image_data
+        image_bytes = request.image.data
         original_img = PIL.Image.open(io.BytesIO(image_bytes))
         original_img = original_img.resize((300, 300))
 
@@ -38,8 +38,8 @@ class VisualizationServiceImpl(vis_grpc.VisualizationServiceServicer):
         new_img.paste(original_img, (0, 0))
 
         # Add text to image
-        text = f'{self.__build("Categories", request.predict_response.categories)}\n\n' \
-            f'{self.__build("Attributes", request.predict_response.attributes)}'
+        text = f'{self.__build("Categories", request.prediction.categories)}\n\n' \
+            f'{self.__build("Attributes", request.prediction.attributes)}'
         editable_img = PIL.ImageDraw.Draw(new_img)
         editable_img.text((315, 15), text, (0, 0, 0), font=self.__font)
 
