@@ -7,7 +7,7 @@ stages:
       type: UNARY
   - name: "OpenPose"
     host: open-pose
-    port: 50051
+    port: 8061
     method:
       type: UNARY
   - name: "OpenCV"
