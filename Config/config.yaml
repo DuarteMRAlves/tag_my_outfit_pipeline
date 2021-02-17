@@ -12,7 +12,7 @@ stages:
       type: UNARY
   - name: "OpenCV"
     host: open-cv
-    port: 50051
+    port: 8061
     method:
       name: process
       type: UNARY

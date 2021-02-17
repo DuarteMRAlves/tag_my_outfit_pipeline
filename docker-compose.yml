@@ -21,7 +21,7 @@ services:
       source: ./Crop/src/crop_function.py
       # Copy to external.py to use external as module name
       # which is the default
-      target: /opencv-grpc/external.py
+      target: /workspace/external.py
   tag-my-outfit:
     image: sipgisr/tag-my-outfit:latest
     environment:

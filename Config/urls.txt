@@ -1,5 +1,5 @@
 image-source:50051
 open-pose:50051
-open-cv:50051
+open-cv:8061
 tag-my-outfit:50051
 visualization:50051
