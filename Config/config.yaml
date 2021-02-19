@@ -1,7 +1,7 @@
 stages:
   - name: "Source"
     host: image-source
-    port: 50051
+    port: 8061
     method:
       name: GetStream
       type: UNARY

@@ -26,8 +26,8 @@ def parse_argv():
     main_parser.add_argument(
         '--port',
         type=int,
-        default=50051,
-        help='Port where the server should listen (defaults to 50051)'
+        default=8061,
+        help='Port where the server should listen (defaults to 8061)'
     )
     return main_parser.parse_args()
 
