@@ -12,7 +12,7 @@ def parse_args():
                     'for the Tag My Outfit Pipeline')
     parser.add_argument(
         '--target',
-        default='localhost:50051',
+        default='localhost:8061',
         help='Location where the server to test is listening')
     parser.add_argument(
         '--delay',

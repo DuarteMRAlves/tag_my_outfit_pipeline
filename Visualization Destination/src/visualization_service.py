@@ -13,7 +13,7 @@ import PIL.ImageFont
 
 _MAX_WORKERS = 10
 _SERVICE_NAME = 'VisualizationService'
-_PORT = 50051
+_PORT = 8061
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 

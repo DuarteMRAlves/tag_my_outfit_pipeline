@@ -24,7 +24,7 @@ stages:
       type: UNARY
   - name: "Visualization"
     host: visualization
-    port: 50051
+    port: 8061
     method:
       type: UNARY
 links:
