@@ -14,9 +14,9 @@ services:
       source: ./images/
       target: /workspace/images/
   open-pose:
-    image: open-pose-grpc-estimation:latest
+    image: sipgisr/open-pose-grpc:kp-estimation-latest
   open-cv:
-    image: opencv-grpc-server:latest
+    image: sipgisr/opencv-grpc:latest
     volumes:
     - type: bind
       source: ./Crop/src/crop_function.py
@@ -35,7 +35,7 @@ services:
     ports:
     - 5000:5000
   orchestrator-node:
-    image: orchestrator:latest
+    image: sipgisr/grpc-orchestrator:latest
     volumes: 
     - type: bind
       source: ./Config
