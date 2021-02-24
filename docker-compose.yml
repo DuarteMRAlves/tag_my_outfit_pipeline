@@ -25,9 +25,6 @@ services:
       target: /workspace/external.py
   tag-my-outfit:
     image: sipgisr/tag-my-outfit:latest
-    environment:
-      HOST: "[::]"
-      PORT: 50051
   visualization:
     build:
       context: ./Visualization Destination/

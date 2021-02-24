@@ -18,7 +18,7 @@ stages:
       type: UNARY
   - name: "TagMyOutfit"
     host: tag-my-outfit
-    port: 50051
+    port: 8061
     method:
       name: predict
       type: UNARY
