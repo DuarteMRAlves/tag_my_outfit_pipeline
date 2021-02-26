@@ -16,7 +16,7 @@ services:
   open-pose:
     image: sipgisr/open-pose-grpc:kp-estimation-latest
   open-cv:
-    image: sipgisr/opencv-grpc:latest
+    image: sipgisr/opencv-grpc:poses-latest
     volumes:
     - type: bind
       source: ./Crop/src/crop_function.py
