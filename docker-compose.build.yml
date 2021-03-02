@@ -5,6 +5,9 @@ services:
   # We can distinguish servers by host, defined by the service name
   # See https://docs.docker.com/compose/networking/
   image-source:
+    build:
+      context: ./Images Folder Source/
+      dockerfile: docker/Dockerfile
     image: sipgisr/image-source:latest
     volumes:
     - type: bind
@@ -23,6 +26,9 @@ services:
   tag-my-outfit:
     image: sipgisr/tag-my-outfit:latest
   visualization:
+    build:
+      context: ./Visualization Destination/
+      dockerfile: docker/Dockerfile
     image: sipgisr/visualization:latest
     # Only port visible outside the docker environment
     # to see the images in the web

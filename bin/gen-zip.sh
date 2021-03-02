@@ -1,0 +1,1 @@
+zip -r tag-my-outfit-pipeline.zip Config Crop images docker-compose.yml
