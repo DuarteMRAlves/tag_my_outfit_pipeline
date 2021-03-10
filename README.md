@@ -2,32 +2,35 @@
 
 ## Overview
 
-This repository provides multiple input and output nodes to build a pipeline for the Tag My Outfit Server. 
-Some of the created nodes can be encapsulated into docker containers to provided an easier deployment.
+This repository provides a pipeline that, given an image classifies clothing parts within a set of attributes, as well as predicts their attributes.
 
-## API
+The results are displayed with a web visualization interface.
 
-The nodes on ths project rely on the gRPC protocol defined in the [Pipeline Core Project](https://github.com/DuarteMRAlves/Pipeline-Core).
-The input nodes should create stubs to send requests for the first processing node, while the output nodes should receive and process the results and not retransmit the information.
+<p style="text-align:center">
+    <img 
+        src="assets/TMO-Pipeline-Demo.gif" 
+        alt="Tag My Outfit Pipeline Demo could not be displayed" 
+        width="500">
+</p>
 
 ## Getting Started
 
- * Run the Tag My Outfit Service node and the attached processing node sepecified in the [Docker Compose file](docker-compose.yml):
+The different stages of the pipeline are executed as docker containers, so you need to install [Docker](https://docs.docker.com/get-docker/) to run it.
+
+The pipeline uses Docker-Compose *(installed by default with Docker)* to run the multiple containers.
+The Docker images are published on DockerHub.
+
+To run the pipeline, execute the following instructions:
+
+* Start the pipeline *(all images will be downloaded from DockerHub)*:
+ 
  ```
  $ docker-compose up
  ```
 
- * Choose one source *(input node)* and destination *(output node)* and run them.
+* Open a browser window at http://localhost:5000 *(you may need to refresh some times until the first image appears)*
 
- * The output node should start to display and store any relevant information.
+## Classifying your own images
 
-
-## Available Nodes
-
-### Sources
-
- * [Image Folder](Images%20Folder%20Source): Reads images from folder and sends them to the next node.
-
-### Destinations
-
- * [Visualization](Visualization%20Destination): Shows the original images as well as the received results.
+The pipeline retrieves the images from the [images directory](images). 
+You can replace the images inside the directory to classify your images.
