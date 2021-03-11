@@ -6,7 +6,7 @@ This repository provides a pipeline that, given an image classifies clothing par
 
 The results are displayed with a web visualization interface.
 
-<p style="text-align:center">
+<p align="center">
     <img 
         src="assets/TMO-Pipeline-Demo.gif" 
         alt="Tag My Outfit Pipeline Demo could not be displayed" 
