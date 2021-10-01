@@ -33,7 +33,7 @@ services:
     # Only port visible outside the docker environment
     # to see the images in the web
     ports:
-    - 5000:5000
+    - "8062:8062"
   orchestrator-node:
     image: sipgisr/grpc-orchestrator:latest
     volumes: 

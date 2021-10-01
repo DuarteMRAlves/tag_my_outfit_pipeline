@@ -67,14 +67,14 @@ COPY --chown=${USER}:${GROUP} ${SRC_DIR} ${WORKSPACE}/
 # Change to non-privileged user
 USER ${USER}
 
-# Expose 5000 for web visualization
-EXPOSE 5000
+# Expose port 8062 for web visualization according to ai4eu specifications
+EXPOSE 8062
 # Expose port 8061 according to ai4eu specifications
 EXPOSE 8061
 
 CMD ["gunicorn", \
     "--threads", "4", \
     "--workers", "1", \
-    "--bind", "0.0.0.0:5000", \
+    "--bind", "0.0.0.0:8062", \
     "app:create_app()"]
 
